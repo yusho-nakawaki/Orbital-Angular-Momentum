@@ -38,37 +38,36 @@ void StreamTx() {
     std::ifstream in_stream_im;
     in_stream_im.open("input_im_include_zero.dat"); 
     if(in_stream_re.fail() || in_stream_im.fail()){	
-		std::cerr << "ファイルを開けません\n";
+		std::cerr << "can't open file\n";
 		exit(1);
 	}
 
     int array_size = 1024*16;
-    int linenum = 0; // データの行数を数える
+    int linenum = 0;
     char* buf_re = new char[array_size];
     char* buf_im = new char[array_size];
-    while(in_stream_re.getline(buf_re, sizeof(buf_re))){	// ファイルから1行ずつ読み込む
-		linenum++;	// 行数をカウントしている
+    while(in_stream_re.getline(buf_re, sizeof(buf_re))){
+		linenum++;
 	}
     std::cerr << "number line of datFile = " << linenum << "\n";
 
-    in_stream_re.clear(); // ファイル末尾に到達というフラグをクリア
-	in_stream_re.seekg(0, std::ios::beg);	// ファイル先頭に戻る
+    in_stream_re.clear();
+	in_stream_re.seekg(0, std::ios::beg); // return top line of the file
 
-    array_size = linenum; // 動的に配列のサイズを確保　いるか？？
-    int tx_size = linenum; // should be same size of inputed matlab data
-    float* tx_buffer = new float[2*tx_size]; // TODO: think about tx.fifo
+    array_size = linenum;
+    int tx_size = linenum;
+    float* tx_buffer = new float[2*tx_size];
 
 	for(int i=0 ; i<tx_size ; i++){
-		in_stream_re.getline(buf_re,sizeof(buf_re));	// 一行読み込んで…
+		in_stream_re.getline(buf_re,sizeof(buf_re));
 		in_stream_im.getline(buf_im,sizeof(buf_im));
-		tx_buffer[2*i] = atoi(buf_re);	// それを配列に格納
+		tx_buffer[2*i] = atoi(buf_re);
 		tx_buffer[2*i+1] = atoi(buf_im);
 		// tx_buffer[2*i] = 1;
 		// tx_buffer[2*i+1] = 0;
         // printf("%.1f %+.1fi\n", tx_buffer[2*i], tx_buffer[2*i+1]);
 	}
 
-    // want to clear buf_re
     in_stream_re.close();
     delete[] buf_re;
     delete[] buf_im;
@@ -91,9 +90,6 @@ void StreamTx() {
 
     while (runningTx) {
         int ret = LMS_SendStream(&tx_stream,tx_buffer,tx_size,&meta_tx,timeout_ms);
-        // printf("SendStream: %d\n", ret);
-        // printf("tx_buffer size:");
-        // cout << sizeof(tx_buffer) << "\n";
         if (ret != tx_size)
             cout << "error: samples sent: " << ret << "/" << tx_size << endl;;
     }   
@@ -106,8 +102,8 @@ void StreamTx() {
 }
 
 void StreamRX() {
-    const int sampleCnt = 1024*128; //complex samples per buffer: ここはある一定の大きさなら大丈夫
-    float* buffer = new float[sampleCnt*2]; //buffer to hold complex values (2*samples))]
+    const int sampleCnt = 1024*128;
+    float* buffer = new float[sampleCnt*2];
 
     lms_stream_t rx_stream;
     rx_stream.channel = 0; 
@@ -115,9 +111,9 @@ void StreamRX() {
     rx_stream.throughputVsLatency = 0.5;
     rx_stream.isTx = false;
     rx_stream.dataFmt = lms_stream_t::LMS_FMT_F32;
-    lms_stream_meta_t meta_rx; //Use metadata for additional control over sample receive function behavior
-    meta_rx.flushPartialPacket = false; //currently has no effect in RX
-    meta_rx.waitForTimestamp = false; //currently has no effect in RX
+    lms_stream_meta_t meta_rx; 
+    meta_rx.flushPartialPacket = false;
+    meta_rx.waitForTimestamp = false;
     if (LMS_SetupStream(device, &rx_stream) != 0)
         error();
 

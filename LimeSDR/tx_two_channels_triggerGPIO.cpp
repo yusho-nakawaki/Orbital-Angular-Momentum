@@ -41,37 +41,32 @@ void StreamTx1() {
     std::ifstream in_stream_im;
     in_stream_im.open("input_im_include_zero.dat"); 
     if(in_stream_re.fail() || in_stream_im.fail()){	
-		std::cerr << "ファイルを開けません\n";
+		std::cerr << "can't open the file\n";
 		exit(1);
 	}
 
     int array_size = 1024*16;
-    int linenum = 0; // データの行数を数える
+    int linenum = 0;
     char* buf_re = new char[array_size];
     char* buf_im = new char[array_size];
-    while(in_stream_re.getline(buf_re, sizeof(buf_re))){	// ファイルから1行ずつ読み込む
-		linenum++;	// 行数をカウントしている
-	}
+    while(in_stream_re.getline(buf_re, sizeof(buf_re))){
+		linenum++;
     std::cerr << "number line of datFile = " << linenum << "\n";
 
-    in_stream_re.clear(); // ファイル末尾に到達というフラグをクリア
-	in_stream_re.seekg(0, std::ios::beg);	// ファイル先頭に戻る
+    in_stream_re.clear();
+	in_stream_re.seekg(0, std::ios::beg);
 
-    array_size = linenum; // 動的に配列のサイズを確保　いるか？？
-    int tx_size = linenum; // should be same size of inputed matlab data
-    float* tx_buffer = new float[2*tx_size]; // TODO: think about tx.fifo
+    array_size = linenum;
+    int tx_size = linenum;
+    float* tx_buffer = new float[2*tx_size];
 
 	for(int i=0 ; i<tx_size ; i++){
-		in_stream_re.getline(buf_re,sizeof(buf_re));	// 一行読み込んで…
+		in_stream_re.getline(buf_re,sizeof(buf_re));
 		in_stream_im.getline(buf_im,sizeof(buf_im));
-		tx_buffer[2*i] = atoi(buf_re);	// それを配列に格納
+		tx_buffer[2*i] = atoi(buf_re);
 		tx_buffer[2*i+1] = atoi(buf_im);
-		// tx_buffer[2*i] = 1;
-		// tx_buffer[2*i+1] = 0;
-        // printf("%.1f %+.1fi\n", tx_buffer[2*i], tx_buffer[2*i+1]);
 	}
 
-    // want to clear buf_re
     in_stream_re.close();
     delete[] buf_re;
     delete[] buf_im;
@@ -119,37 +114,36 @@ void StreamTx2() {
     std::ifstream in_stream_im;
     in_stream_im.open("input_im_include_zero.dat"); 
     if(in_stream_re.fail() || in_stream_im.fail()){	
-		std::cerr << "ファイルを開けません\n";
+		std::cerr << "can't open the file\n";
 		exit(1);
 	}
 
     int array_size = 1024*16;
-    int linenum = 0; // データの行数を数える
+    int linenum = 0; 
     char* buf_re = new char[array_size];
     char* buf_im = new char[array_size];
-    while(in_stream_re.getline(buf_re, sizeof(buf_re))){	// ファイルから1行ずつ読み込む
-		linenum++;	// 行数をカウントしている
+    while(in_stream_re.getline(buf_re, sizeof(buf_re))){
+		linenum++;
 	}
     std::cerr << "number line of datFile = " << linenum << "\n";
 
-    in_stream_re.clear(); // ファイル末尾に到達というフラグをクリア
-	in_stream_re.seekg(0, std::ios::beg);	// ファイル先頭に戻る
+    in_stream_re.clear();
+	in_stream_re.seekg(0, std::ios::beg);
 
-    array_size = linenum; // 動的に配列のサイズを確保　いるか？？
-    int tx_size = linenum; // should be same size of inputed matlab data
-    float* tx_buffer = new float[2*tx_size]; // TODO: think about tx.fifo
+    array_size = linenum;
+    int tx_size = linenum;
+    float* tx_buffer = new float[2*tx_size];
 
 	for(int i=0 ; i<tx_size ; i++){
-		in_stream_re.getline(buf_re,sizeof(buf_re));	// 一行読み込んで…
+		in_stream_re.getline(buf_re,sizeof(buf_re));
 		in_stream_im.getline(buf_im,sizeof(buf_im));
-		tx_buffer[2*i] = atoi(buf_re);	// それを配列に格納
+		tx_buffer[2*i] = atoi(buf_re);
 		tx_buffer[2*i+1] = atoi(buf_im);
 		// tx_buffer[2*i] = 1;
 		// tx_buffer[2*i+1] = 0;
         // printf("%.1f %+.1fi\n", tx_buffer[2*i], tx_buffer[2*i+1]);
 	}
 
-    // want to clear buf_re
     in_stream_re.close();
     delete[] buf_re;
     delete[] buf_im;
@@ -235,13 +229,6 @@ int main(int argc, char** argv)
             error();
         if (LMS_SetNormalizedGain(device, LMS_CH_TX, 1, 0.68) != 0)
             error();
-
-        // 00090726074F2C27
-        // if (LMS_SetNormalizedGain(device, LMS_CH_TX, 0, 0.68) != 0)
-        //     error();
-        // if (LMS_SetNormalizedGain(device, LMS_CH_TX, 1, 0.68) != 0)
-        //     error();
-
 
         uint8_t gpio_val = 0;
         if (LMS_GPIORead(device, &gpio_val, 1)!=0) //1 byte buffer is enough to read 8 GPIO pins on LimeSDR-USB
