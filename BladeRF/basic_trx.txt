@@ -1,0 +1,18 @@
+# Set up device parameters
+set frequency rx 920M
+set frequency tx 920M
+set samplerate 1M
+set bandwidth 3M
+set txvga1 -15
+set txvga2 0
+set lnagain 6
+set rxvga1  10
+set rxvga2  0
+
+# Configure TX & RX operations
+tx config file=input.csv format=csv repeat=100 timeout=60s
+rx config file=output.csv format=csv n=3000000 timeout=60s
+
+# Start streaming sampling 
+rx start
+tx start
