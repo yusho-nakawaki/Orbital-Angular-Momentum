@@ -12,9 +12,3 @@ OAM mode1 | OAM mode2
 <img width="350" src="https://github.com/yusho-nakawaki/Orbital-Angular-Momentum/assets/75678016/8efa2394-ae1f-4763-9532-8c5bb53c928b"> | <img width="350" src="https://github.com/yusho-nakawaki/Orbital-Angular-Momentum/assets/75678016/350640eb-c7fc-4c29-9f4b-35265973669f">
 
 Multiplexing is possible by using different OAM modes. This is how OAM achieves high-speed data transmission.
-
-# Experiment
-Experiment on OAM Multiplexing Using two USRP Divices | 
-:--: | 
-<img width="500" src="https://github.com/yusho-nakawaki/Orbital-Angular-Momentum/assets/75678016/c29f7ea7-d0d8-4be9-978b-01bfc9c76c2d"> |
-
